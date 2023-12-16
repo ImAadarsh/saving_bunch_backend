@@ -1,5 +1,5 @@
 const express = require('express');
-const { getCategorys, postCategory, updateCategory, deleteCategoryImage, deleteCategory, deleteAllCategorys } = require('../controllers/coupanController');
+const { getCategorys, postCategory, updateCategory, deleteCategoryImage, deleteCategory, deleteAllCategorys } = require('../controllers/categoryController');
 const auth = require('../middleware/auth');
 const { upload } = require('../util/util');
 const router = express.Router();

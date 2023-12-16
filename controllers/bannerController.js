@@ -1,6 +1,6 @@
 const Banner = require('../models/Banner');
 const nodemailer = require('nodemailer');
-const { removeUndefined } = require('../util/util');
+const { removeUndefined, uploadToCloudinary } = require('../util/util');
 
 const getBanners = async () => {
     const data = await Banner.find();
@@ -16,12 +16,11 @@ const postBanner = async ({ file, sequence }) => {
     });
     const saveUser = await newBanner.save();
 
-    return { status: true, data: saveUser, message: 'Conatct sent Successfully' };
+    return { status: true, data: saveUser, message: 'Banner saved Successfully' };
 };
 
 const updateBanner = async ({ id, file, sequence }) => {
     const updateObj = removeUndefined({
-        imgLink,
         sequence
     });
     if(file !== '' && file !== undefined)
@@ -30,10 +29,10 @@ const updateBanner = async ({ id, file, sequence }) => {
         var result = await uploadToCloudinary(locaFilePath);
         updateObj['imgLink'] = result.url;
     }
-
+console.log(updateObj);
     const saveUser = await Banner.findByIdAndUpdate(id, {$set: updateObj}, {new: true});
 
-    return { status: true, data: saveUser, message: 'Conatct sent Successfully' };
+    return { status: true, data: saveUser, message: 'Update Banner Successfully' };
 };
 
 const deleteBanner = async ({ id, auth }) => {
