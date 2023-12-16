@@ -1,64 +1,37 @@
 const Banner = require('../models/Banner');
 const nodemailer = require('nodemailer');
+const { removeUndefined } = require('../util/util');
 
 const getBanners = async () => {
     const data = await Banner.find();
     return { status: true, data };
 };
 
-const postBanner = async ({ name, email, phone, company, message }) => {
+const postBanner = async ({ file, sequence }) => {
+    var locaFilePath = file.path;
+    var result = await uploadToCloudinary(locaFilePath);
     const newBanner = new Banner({
-        name,
-        email,
-        phone,
-        company,
-        message
+        imgLink: result.url,
+        sequence
     });
     const saveUser = await newBanner.save();
 
-    // var transport = nodemailer.createTransport({
-    //     service: "Gmail",
-    //     auth: {
-    //         user: "gravityinfosolutions201@gmail.com",
-    //         // pass: "Gravity2001!"
-    //         pass: "rdgqycmtkgrocnwb"
-    //     }
-    // });
+    return { status: true, data: saveUser, message: 'Conatct sent Successfully' };
+};
 
-    // var message = {
-    //     // from: 'Gravity Infosolutions <gravityinfosolutions201@gmail.com>',
-    //     from: 'Gravity Infosolutions <info@gravityinfosolutions.com',
+const updateBanner = async ({ id, file, sequence }) => {
+    const updateObj = removeUndefined({
+        imgLink,
+        sequence
+    });
+    if(file !== '' && file !== undefined)
+    {
+        var locaFilePath = file.path;
+        var result = await uploadToCloudinary(locaFilePath);
+        updateObj['imgLink'] = result.url;
+    }
 
-    //     to: '"Gravity Infosolutions" <info@gravityinfosolutions.com>',
-    //     // to: '"Gravity Infosolutions" <hitenkhatri14@gmail.com>',
-
-    //     subject: 'Banner Form Details',
-
-    //     text: `<div>
-    //             <p>Name: ${name}</p>
-    //             <p>Email: ${email}</p>
-    //             <p>Phone: ${phone}</p>
-    //             <p>Company: ${company}</p>
-    //             <p>Message: ${message}</p>
-    //         </div>`,
-
-    //     html: `<div>
-    //             <p>Name: ${name}</p>
-    //             <p>Email: ${email}</p>
-    //             <p>Phone: ${phone}</p>
-    //             <p>Company: ${company}</p>
-    //             <p>Message: ${message}</p>
-    //         </div>`
-    // };
-
-    // transport.sendMail(message, function (error) {
-    //     if (error) {
-    //         console.log('Error occured');
-    //         console.log(error.message);
-    //         return;
-    //     }
-    //     console.log('Message sent successfully!');
-    // });
+    const saveUser = await Banner.findByIdAndUpdate(id, {$set: updateObj}, {new: true});
 
     return { status: true, data: saveUser, message: 'Conatct sent Successfully' };
 };
@@ -75,6 +48,7 @@ const deleteBanner = async ({ id, auth }) => {
 module.exports = {
     getBanners,
     postBanner,
+    updateBanner,
     deleteBanner
 };
 

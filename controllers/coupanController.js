@@ -30,7 +30,7 @@ const postCoupan=async ({store, category, title, coupanCode, link, expiryDate, i
 
     var locaFilePath = file.path;
     var result = await uploadToCloudinary(locaFilePath);
-    console.log(result);
+    // console.log(result);
 
     const newCoupan = new Coupan({
         store, category, title, coupanCode, link, expiryDate, is_coupan, is_popular, is_exclusive, img: {
