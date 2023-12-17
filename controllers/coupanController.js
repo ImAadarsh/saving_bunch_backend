@@ -33,7 +33,7 @@ const postCoupan=async ({store, category, title, coupanCode, link, expiryDate, i
     // console.log(result);
 
     const newCoupan = new Coupan({
-        store, category, title, coupanCode, link, expiryDate, is_coupan, is_popular, is_exclusive, img: {
+        store: JSON.parse(store), category: JSON.parse(category), title, coupanCode, link, expiryDate, is_coupan, is_popular, is_exclusive, img: {
             url: result.url,
             id: result.public_id
         }, desc, ts: new Date().getTime()
@@ -48,7 +48,7 @@ const updateCoupan = async ({ id, auth, store, category, title, coupanCode, link
     //     return { status: false, message: "Not Authorised" }
     // }
 
-    let updateObj = removeUndefined({ store, category, title, coupanCode, link, expiryDate, is_coupan, is_popular, is_exclusive, desc });
+    let updateObj = removeUndefined({ store: JSON.parse(store), category: JSON.parse(category), title, coupanCode, link, expiryDate, is_coupan, is_popular, is_exclusive, desc });
 
     if (file !== '' && file !== undefined) {
         // insert new image as old one is deleted
