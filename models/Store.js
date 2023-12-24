@@ -7,6 +7,7 @@ const mySchema=mongoose.Schema({
         id: String
     },
     desc: String,
+    isFeatured: String,
     ts:String,
 },{
     timestamps: true

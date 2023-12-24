@@ -2,11 +2,15 @@ const Store = require("../models/Store");
 const { removeUndefined, uploadToCloudinary } = require("../util/util");
 const cloudinary = require("cloudinary").v2;
 
-const getStores=async ({id})=>{
+const getStores=async ({id, isFeatured})=>{
     let and = [];
-    if(id)
+    if(id && id!=="" && id!=="undefined")
     {
         and.push({_id: id});
+    }
+    if(isFeatured && isFeatured!=="" && isFeatured!=="undefined")
+    {
+        and.push({isFeatured});
     }
     if(and.length===0)
     {
@@ -16,7 +20,7 @@ const getStores=async ({id})=>{
     return {status: true,  data};
 };
 
-const postStore=async ({title, file, desc, auth})=>{
+const postStore=async ({title, file, desc, isFeatured, auth})=>{
     // if(!auth || auth.role!=='ADMIN')
     // {
     //     return { status: false, message: "Not Authorised" };
@@ -33,19 +37,19 @@ const postStore=async ({title, file, desc, auth})=>{
         title, file, desc, img: {
             url: result.url,
             id: result.public_id
-        }, ts: new Date().getTime()
+        }, isFeatured, ts: new Date().getTime()
     });
     const saveStore = await newStore.save();
 
     return { status: true, message: 'New store created', data: saveStore };
 };
 
-const updateStore = async ({ id, auth, title, file, desc }) => {
+const updateStore = async ({ id, auth, title, file, desc, isFeatured }) => {
     // if (!auth  || auth.role!=='ADMIN') {
     //     return { status: false, message: "Not Authorised" }
     // }
 
-    let updateObj = removeUndefined({ title, desc });
+    let updateObj = removeUndefined({ title, desc, isFeatured });
 
     if (file !== '' && file !== undefined) {
         // insert new image as old one is deleted
