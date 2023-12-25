@@ -1,4 +1,4 @@
-const Banner = require('../models/Banner');
+const Banner = require('../models/ExclusiveBanner');
 const nodemailer = require('nodemailer');
 const { removeUndefined, uploadToCloudinary } = require('../util/util');
 
@@ -7,16 +7,16 @@ const getBanners = async () => {
     return { status: true, data };
 };
 
-const postBanner = async ({ file, sequence, buttonLink, text, subText, buttonText }) => {
+const postBanner = async ({ file, sequence}) => {
     var locaFilePath = file.path;
     var result = await uploadToCloudinary(locaFilePath);
     const newBanner = new Banner({
         imgLink: result.url,
-        sequence, buttonLink, text, subText, buttonText
+        sequence
     });
     const saveUser = await newBanner.save();
 
-    return { status: true, data: saveUser, message: 'Banner saved Successfully' };
+    return { status: true, data: saveUser, message: 'Exclusive Banner saved Successfully' };
 };
 
 const updateBanner = async ({ id, file, sequence }) => {

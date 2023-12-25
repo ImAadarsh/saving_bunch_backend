@@ -2,46 +2,83 @@ const Coupan = require("../models/Coupan");
 const { removeUndefined, uploadToCloudinary } = require("../util/util");
 const cloudinary = require("cloudinary").v2;
 
-const getCoupans=async ({id, slug})=>{
-    let and = [];
-    if(id)
-    {
-        and.push({_id: id});
+const getCoupans = async ({ store, category }) => {
+    const query = {};
+
+    if (store) {
+        query.store = store;
     }
-    if(slug)
-    {
-        and.push({slug});
+
+    if (category) {
+        query.category = category;
     }
-    if(and.length===0)
-    {
-        and.push({});
+
+    console.log('Query Object:', query);
+
+    try {
+        // Assuming you have a Mongoose model named 'Coupon'
+        const data = await Coupan.find(query);
+
+        return { status: true, data };
+    } catch (error) {
+        // Handle any potential errors here
+        console.error('Error fetching coupons:', error);
+        return { status: false, error: 'Error fetching coupons' };
     }
-    const data=await Coupan.find({$and: and});
-    return {status: true,  data};
 };
 
-const postCoupan=async ({store, category, title, coupanCode, link, expiryDate, is_coupan, is_popular, is_exclusive, file, desc, auth})=>{
-    // if(!auth || auth.role!=='ADMIN')
-    // {
-    //     return { status: false, message: "Not Authorised" };
-    // }
+const getCoupansByIds = async ({ storeId, categoryId}) => {
+    // Your logic to retrieve coupans based on storeId and categoryId
+    // ...
+    console.log(storeId);
 
-    // console.log(title, subTitle, writtenBy, tags, file);
+    // For example:
+    const coupans = await Coupan.find({ store: storeId});
 
-    var locaFilePath = file.path;
-    var result = await uploadToCloudinary(locaFilePath);
-    // console.log(result);
-
-    const newCoupan = new Coupan({
-        store: JSON.parse(store), category: JSON.parse(category), title, coupanCode, link, expiryDate, is_coupan, is_popular, is_exclusive, img: {
-            url: result.url,
-            id: result.public_id
-        }, desc, ts: new Date().getTime()
-    });
-    const saveCoupan = await newCoupan.save();
-
-    return { status: true, message: 'New store created', data: saveCoupan };
+    return { status: true, data: coupans };
 };
+
+
+const postCoupan = async ({ store, category, title, coupanCode, link, expiryDate, is_coupan, is_popular, is_exclusive, file, desc, sideLine, subText, auth }) => {
+    // ... (Your commented out authorization check)
+    console.log('Input Data - store:', store);
+    console.log('Input Data - category:', category);
+
+    try {
+        var locaFilePath = file.path;
+        var result = await uploadToCloudinary(locaFilePath);
+
+        const newCoupan = new Coupan({
+            store: store,
+            category: category,
+            title,
+            coupanCode,
+            link,
+            expiryDate,
+            is_coupan,
+            is_popular,
+            is_exclusive,
+            sideLine,
+            subText,
+            img: {
+                url: result.url,
+                id: result.public_id
+            },
+            desc,
+            ts: new Date().getTime()
+        });
+
+        const saveCoupan = await newCoupan.save();
+        return { status: true, message: 'New Coupon created', data: saveCoupan };
+    } catch (error) {
+        console.error('Error in postCoupan:', error);
+        return { status: false, message: 'Error creating coupon', error: error.message };
+    }
+};
+
+// Example usage:
+// postCoupan({ store: '{"key": "value"}', category: '{"key": "value"}', ...otherParams });
+
 
 const updateCoupan = async ({ id, auth, store, category, title, coupanCode, link, expiryDate, is_coupan, is_popular, is_exclusive, file, desc }) => {
     // if (!auth  || auth.role!=='ADMIN') {
@@ -112,5 +149,6 @@ module.exports={
     updateCoupan,
     deleteAllCoupans,
     deleteCoupan,
-    deleteCoupanImage
+    deleteCoupanImage,
+    getCoupansByIds
 };

@@ -2,10 +2,6 @@ const mongoose=require('mongoose');
 
 const mySchema=mongoose.Schema({
     imgLink: String,
-    buttonLink: String,
-    buttonText: String,
-    text: String,
-    subText: String,
     sequence:String,
     ts:{
         type: String,
@@ -15,6 +11,6 @@ const mySchema=mongoose.Schema({
     timestamps: true
 });
 
-const Banner=mongoose.model('Banner', mySchema);
+const Banner=mongoose.model('ExclusiveBanner', mySchema);
 
 module.exports=Banner;

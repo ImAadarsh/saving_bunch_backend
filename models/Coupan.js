@@ -1,30 +1,44 @@
 const mongoose=require('mongoose');
+const Store = require('./Store');
+const Category = require('./Category');
 
-const mySchema=mongoose.Schema({
-    store:Object,
-    category: Object,
+const mySchema = mongoose.Schema({
+    store: {
+        type: mongoose.Schema.Types.ObjectId,  // Assuming ObjectId is used for Store
+        ref: 'Store'  // Use the name of the referenced model
+    },
+    category: {
+        type: mongoose.Schema.Types.ObjectId,  // Assuming ObjectId is used for Category
+        ref: 'Category'  // Use the name of the referenced model
+    },
     title: String,
-    coupanCode:String,
-    link:String,
-    expiryDate:String,
-    img:{
+    subText: String,
+    coupanCode: String,
+    link: String,
+    sideLine: String,
+    expiryDate: String,
+    img: {
         url: String,
         id: String
     },
     desc: String,
     is_coupan: {
-        type: String,
+        type: Boolean,
+        default: false
     },
     is_popular: {
-        type: String,
+        type: Boolean,
+        default: false
     },
     is_exclusive: {
-        type: String,
+        type: Boolean,
+        default: false
     },
-    ts:String,
-},{
+    ts: String,
+}, {
     timestamps: true
 });
+
 
 const Coupan=mongoose.model('Coupan', mySchema);
 

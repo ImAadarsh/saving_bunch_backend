@@ -1,11 +1,20 @@
 const express = require('express');
-const { getCoupans, postCoupan, updateCoupan, deleteCoupanImage, deleteCoupan, deleteAllCoupans } = require('../controllers/coupanController');
+const { getCoupans, postCoupan, updateCoupan, deleteCoupanImage, deleteCoupan, deleteAllCoupans, getCoupansByIds } = require('../controllers/coupanController');
 const auth = require('../middleware/auth');
 const { upload } = require('../util/util');
 const router = express.Router();
 
 router.get('/getCoupans', async (req, res) => {
     const data = await getCoupans({ ...req.query });
+    res.json(data);
+});
+
+router.get('/getCoupansById', async (req, res) => {
+    const { storeId, categoryId } = req.query;
+    console.log("dds");
+    
+    // Assuming you have a function getCoupansByIds that accepts storeId and categoryId
+    const data = await getCoupansByIds({...req.query, storeId, categoryId });
     res.json(data);
 });
 

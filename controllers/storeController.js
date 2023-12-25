@@ -2,25 +2,25 @@ const Store = require("../models/Store");
 const { removeUndefined, uploadToCloudinary } = require("../util/util");
 const cloudinary = require("cloudinary").v2;
 
-const getStores=async ({id, isFeatured})=>{
-    let and = [];
-    if(id && id!=="" && id!=="undefined")
-    {
-        and.push({_id: id});
+const getStores = async ({ id, isFeatured }) => {
+    const query = {};
+
+    if (id) {
+        query._id = id;
     }
-    if(isFeatured && isFeatured!=="" && isFeatured!=="undefined")
-    {
-        and.push({isFeatured});
+
+    if (isFeatured) {
+        query.isFeatured = isFeatured;
     }
-    if(and.length===0)
-    {
-        and.push({});
-    }
-    const data=await Store.find({$and: and});
-    return {status: true,  data};
+    console.log('Query Object:', query);
+    const data = await Store.find(query);
+    console.log('Returned Data:', data);
+    return { status: true, data };
+    
 };
 
-const postStore=async ({title, file, desc, isFeatured, auth})=>{
+
+const postStore=async ({title, file, desc, isFeatured, subHeading, auth})=>{
     // if(!auth || auth.role!=='ADMIN')
     // {
     //     return { status: false, message: "Not Authorised" };
@@ -34,7 +34,7 @@ const postStore=async ({title, file, desc, isFeatured, auth})=>{
     // res.json({ url: result.url, public_id: result.public_id,msg:"Image Upload Successfully" });
 
     const newStore = new Store({
-        title, file, desc, img: {
+       subHeading, title, file, desc, img: {
             url: result.url,
             id: result.public_id
         }, isFeatured, ts: new Date().getTime()

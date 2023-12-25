@@ -8,6 +8,7 @@ const mySchema=mongoose.Schema({
     },
     desc: String,
     isFeatured: String,
+    subHeading: String,
     ts:String,
 },{
     timestamps: true
