@@ -2,7 +2,7 @@ require('dotenv').config();
 require('./db/conn');
 const express=require('express');
 const cors=require('cors');
-const port = process.env.PORT || 5011;
+const port = process.env.PORT || 5000;
 const app=express();
 const Coupon = require('./models/Coupan');
 const Category = require('./models/Category');
@@ -10,7 +10,6 @@ const Store = require('./models/Store');
 const Banner = require('./models/Banner');
 const ExclusiveBanner = require('./models/ExclusiveBanner');
 const Email = require('./models/Email');
-
 
 
 // const userRouter=require('./routes/userRouter');
