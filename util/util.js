@@ -31,7 +31,7 @@ const upload = multer({ storage }).single('file');
 const multiUpload = multer({ storage }).fields([
     {
         name: 'images',
-        maxCount: 10
+        maxCount: 1000000
     }
 ]);
 

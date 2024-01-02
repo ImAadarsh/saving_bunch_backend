@@ -2,7 +2,7 @@ require('dotenv').config();
 require('./db/conn');
 const express=require('express');
 const cors=require('cors');
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5011;
 const app=express();
 const Coupon = require('./models/Coupan');
 const Category = require('./models/Category');
@@ -20,6 +20,7 @@ const coupanRouter=require('./routes/coupanRouter');
 const categoryRouter=require('./routes/categoryRouter');
 const emailRouter=require('./routes/emailRouter');
 const brandRouter = require('./routes/brandRouter');
+const dealRouter = require('./routes/dealRouter');
 
 app.use(cors());
 app.use(express.json());
@@ -34,6 +35,7 @@ app.use('/coupan', coupanRouter);
 app.use('/category', categoryRouter);
 app.use('/email', emailRouter);
 app.use('/brands', brandRouter);
+app.use('/deals', dealRouter);
 
 
 app.get('/api/totalCouponsWithStoreInfo', async (req, res) => {
