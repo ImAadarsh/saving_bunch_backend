@@ -2,7 +2,7 @@ require('dotenv').config();
 require('./db/conn');
 const express=require('express');
 const cors=require('cors');
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5011;
 const app=express();
 const Coupon = require('./models/Coupan');
 const Category = require('./models/Category');
@@ -89,7 +89,34 @@ app.get('/api/totalCounts', async (req, res) => {
         res.status(500).json({ status: false, message: 'Internal Server Error' });
     }
 });
-
+// Define the search route
+app.get('/api/searchCoupons', async (req, res) => {
+    try {
+      const { storeId, categoryId, searchTerm } = req.query;
+  
+      // Build the query based on the provided parameters
+      const query = {};
+      if (storeId) query.store = storeId;
+      if (categoryId) query.category = categoryId;
+      if (searchTerm) {
+        query.$or = [
+          { title: { $regex: searchTerm, $options: 'i' } },
+          { subText: { $regex: searchTerm, $options: 'i' } },
+          { coupanCode: { $regex: searchTerm, $options: 'i' } },
+          { desc: { $regex: searchTerm, $options: 'i' } },
+          { sideLine: { $regex: searchTerm, $options: 'i' } },
+        ];
+      }
+  
+      // Execute the query and retrieve the coupons
+      const coupons = await Coupon.find(query);
+  
+      res.json({ status: true, data: coupons });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ status: false, message: 'Internal Server Error' });
+    }
+  });
 
 app.listen(port, ()=>{
     console.log(port);
