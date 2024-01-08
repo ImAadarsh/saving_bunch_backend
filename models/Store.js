@@ -7,6 +7,7 @@ const mySchema=mongoose.Schema({
         id: String
     },
     desc: String,
+    priority: Number,
     isFeatured: String,
     subHeading: String,
     ts:String,

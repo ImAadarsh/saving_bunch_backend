@@ -20,7 +20,7 @@ const getStores = async ({ id, isFeatured }) => {
 };
 
 
-const postStore=async ({title, file, desc, isFeatured, subHeading, auth})=>{
+const postStore=async ({title, file, desc, isFeatured, subHeading, priority, auth})=>{
     // if(!auth || auth.role!=='ADMIN')
     // {
     //     return { status: false, message: "Not Authorised" };
@@ -34,7 +34,7 @@ const postStore=async ({title, file, desc, isFeatured, subHeading, auth})=>{
     // res.json({ url: result.url, public_id: result.public_id,msg:"Image Upload Successfully" });
 
     const newStore = new Store({
-       subHeading, title, file, desc, img: {
+       subHeading, title, file, desc, priority, img: {
             url: result.url,
             id: result.public_id
         }, isFeatured, ts: new Date().getTime()
@@ -44,12 +44,12 @@ const postStore=async ({title, file, desc, isFeatured, subHeading, auth})=>{
     return { status: true, message: 'New store created', data: saveStore };
 };
 
-const updateStore = async ({ id, auth, title, file, desc, isFeatured }) => {
+const updateStore = async ({ id, auth, title, file, desc, isFeatured, priority }) => {
     // if (!auth  || auth.role!=='ADMIN') {
     //     return { status: false, message: "Not Authorised" }
     // }
 
-    let updateObj = removeUndefined({ title, desc, isFeatured });
+    let updateObj = removeUndefined({ title, desc, isFeatured, priority });
 
     if (file !== '' && file !== undefined) {
         // insert new image as old one is deleted

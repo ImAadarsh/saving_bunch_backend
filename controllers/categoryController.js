@@ -20,7 +20,7 @@ const getCategorys=async ({id, slug})=>{
     return {status: true,  data};
 };
 
-const postCategory=async ({title, file, desc, auth})=>{
+const postCategory=async ({title, file, desc, priority, auth})=>{
     // if(!auth || auth.role!=='ADMIN')
     // {
     //     return { status: false, message: "Not Authorised" };
@@ -37,19 +37,19 @@ const postCategory=async ({title, file, desc, auth})=>{
         title, img: {
             url: result.url,
             id: result.public_id
-        }, desc, ts: new Date().getTime()
+        }, desc,priority, ts: new Date().getTime()
     });
     const saveCategory = await newCategory.save();
 
     return { status: true, message: 'New category created', data: saveCategory };
 };
 
-const updateCategory = async ({ id, auth, title, desc, slug, file }) => {
+const updateCategory = async ({ id, auth, title, desc, slug, priority,  file }) => {
     // if (!auth  || auth.role!=='ADMIN') {
     //     return { status: false, message: "Not Authorised" }
     // }
 
-    let updateObj = removeUndefined({ title, desc });
+    let updateObj = removeUndefined({ title, desc, priority });
 
     if (file !== '' && file !== undefined) {
         // insert new image as old one is deleted

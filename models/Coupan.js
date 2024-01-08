@@ -22,6 +22,7 @@ const mySchema = mongoose.Schema({
         id: String
     },
     desc: String,
+    priority: Number,
     is_coupan: {
         type: Boolean,
         default: false
