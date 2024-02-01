@@ -30,8 +30,6 @@ const postCategory=async ({title, file, desc, priority, seoTitle, name, pageTitl
         title, img: {
             url: result.url,
             id: result.public_id,
-            seoTitle : result.title,
-            pageTitle : result,
         }, desc,priority,seoTitle,name,pageTitle, ts: new Date().getTime()
     });
     const saveCategory = await newCategory.save();
