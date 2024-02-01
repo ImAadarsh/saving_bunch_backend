@@ -20,7 +20,7 @@ const getStores = async ({ id, isFeatured }) => {
 };
 
 
-const postStore=async ({title, file, desc, isFeatured, subHeading, priority, auth})=>{
+const postStore=async ({title, file, desc, isFeatured, subHeading, priority, invalidLink, seoTitle, pageTitle, status, category, similarStore,storeOverview, auth})=>{
     // if(!auth || auth.role!=='ADMIN')
     // {
     //     return { status: false, message: "Not Authorised" };
@@ -34,7 +34,7 @@ const postStore=async ({title, file, desc, isFeatured, subHeading, priority, aut
     // res.json({ url: result.url, public_id: result.public_id,msg:"Image Upload Successfully" });
 
     const newStore = new Store({
-       subHeading, title, file, desc, priority, img: {
+       subHeading, title, file, desc, priority, invalidLink, seoTitle, pageTitle, status, category, similarStore,storeOverview, img: {
             url: result.url,
             id: result.public_id
         }, isFeatured, ts: new Date().getTime()
