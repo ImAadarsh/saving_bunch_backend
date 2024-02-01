@@ -34,7 +34,7 @@ const postStore=async ({title, file, desc, isFeatured, subHeading, priority, inv
     // res.json({ url: result.url, public_id: result.public_id,msg:"Image Upload Successfully" });
 
     const newStore = new Store({
-       subHeading, title, file, desc, priority, invalidLink, seoTitle, pageTitle, status, category, similarStore,storeOverview, img: {
+       subHeading, title, file, desc: storeOverview, priority, invalidLink, seoTitle, pageTitle, status, category, similarStore,storeOverview: desc, img: {
             url: result.url,
             id: result.public_id
         }, isFeatured, ts: new Date().getTime()
