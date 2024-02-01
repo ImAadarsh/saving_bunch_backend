@@ -20,14 +20,7 @@ const getCategorys=async ({id, slug})=>{
     return {status: true,  data};
 };
 
-const postCategory=async ({title, file, desc, priority, auth})=>{
-    // if(!auth || auth.role!=='ADMIN')
-    // {
-    //     return { status: false, message: "Not Authorised" };
-    // }
-
-    // console.log(title, subTitle, writtenBy, tags, file);
-
+const postCategory=async ({title, file, desc, priority, seoTitle, name, pageTitle, auth})=>{
     var locaFilePath = file.path;
     var result = await uploadToCloudinary(locaFilePath);
     console.log(result);
@@ -36,8 +29,10 @@ const postCategory=async ({title, file, desc, priority, auth})=>{
     const newCategory = new Category({
         title, img: {
             url: result.url,
-            id: result.public_id
-        }, desc,priority, ts: new Date().getTime()
+            id: result.public_id,
+            seoTitle : result.title,
+            pageTitle : result,
+        }, desc,priority,seoTitle,name,pageTitle, ts: new Date().getTime()
     });
     const saveCategory = await newCategory.save();
 
