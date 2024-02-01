@@ -1,8 +1,8 @@
-const mongoose=require('mongoose');
+const mongoose = require('mongoose');
 
-const mySchema=mongoose.Schema({
+const mySchema = mongoose.Schema({
     title: String,
-    img:{
+    img: {
         url: String,
         id: String
     },
@@ -10,11 +10,24 @@ const mySchema=mongoose.Schema({
     priority: Number,
     isFeatured: String,
     subHeading: String,
-    ts:String,
-},{
+    seoTitle: String,
+    pageTitle: String,
+    invalidLink: String,
+    status: Boolean,
+    storeOverview: String,
+    ts: String,
+    similarStores: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Store'
+    }],
+    category: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category'
+    }]
+}, {
     timestamps: true
 });
 
-const Store=mongoose.model('Store', mySchema);
+const Store = mongoose.model('Store', mySchema);
 
-module.exports=Store;
+module.exports = Store;

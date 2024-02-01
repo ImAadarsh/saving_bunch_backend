@@ -3,14 +3,14 @@ const Store = require('./Store');
 const Category = require('./Category');
 
 const mySchema = mongoose.Schema({
-    store: {
-        type: mongoose.Schema.Types.ObjectId,  // Assuming ObjectId is used for Store
-        ref: 'Store'  // Use the name of the referenced model
-    },
-    category: {
+    store: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Store'
+    }],
+    category: [{
         type: mongoose.Schema.Types.ObjectId,  // Assuming ObjectId is used for Category
         ref: 'Category'  // Use the name of the referenced model
-    },
+    }],
     title: String,
     subText: String,
     coupanCode: String,
