@@ -20,6 +20,43 @@ const getCategorys=async ({id, slug})=>{
     return {status: true,  data};
 };
 
+const getAllCategoriesByFirstLetter = async () => {
+    const pipeline = [
+        {
+            $project: {
+                firstLetter: { $substr: ['$title', 0, 1] },
+                name: '$title',  // Include the title field as 'name'
+                _id: 1,  // Include the _id field
+                img: 1,  // Include the img field
+                // Add other fields if needed
+            },
+        },
+        {
+            $project: {
+                firstLetter: { $toUpper: '$firstLetter' },
+                name: 1,
+                _id: 1,
+                img: 1,
+                // Add other fields if needed
+            },
+        },
+        {
+            $group: {
+                _id: '$firstLetter',
+                data: { $push: { name: '$name', _id: '$_id', img: '$img' } },
+            },
+        },
+        { $sort: { _id: 1 } },
+    ];
+
+    const data = await Category.aggregate(pipeline);
+    return { status: true, data };
+};
+
+
+
+
+
 const postCategory=async ({title, file, desc, priority, seoTitle, name, pageTitle, auth})=>{
     var locaFilePath = file.path;
     var result = await uploadToCloudinary(locaFilePath);
@@ -106,5 +143,6 @@ module.exports={
     updateCategory,
     deleteAllCategorys,
     deleteCategory,
-    deleteCategoryImage
+    deleteCategoryImage,
+    getAllCategoriesByFirstLetter
 };

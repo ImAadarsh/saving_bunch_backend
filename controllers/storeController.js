@@ -20,6 +20,39 @@ const getStores = async ({ id, isFeatured }) => {
 };
 
 
+const getAllStoreByFirstLetter = async () => {
+    const pipeline = [
+        {
+            $project: {
+                firstLetter: { $substr: ['$title', 0, 1] },
+                name: '$title',  // Include the title field as 'name'
+                _id: 1,  // Include the _id field
+                img: 1,  // Include the img field
+                // Add other fields if needed
+            },
+        },
+        {
+            $project: {
+                firstLetter: { $toUpper: '$firstLetter' },
+                name: 1,
+                _id: 1,
+                img: 1,
+                // Add other fields if needed
+            },
+        },
+        {
+            $group: {
+                _id: '$firstLetter',
+                data: { $push: { name: '$name', _id: '$_id', img: '$img' } },
+            },
+        },
+        { $sort: { _id: 1 } },
+    ];
+
+    const data = await Store.aggregate(pipeline);
+    return { status: true, data };
+};
+
 const postStore=async ({title, file, desc, isFeatured, subHeading, priority, invalidLink, seoTitle, pageTitle, status, category, similarStore,storeOverview, auth})=>{
     // if(!auth || auth.role!=='ADMIN')
     // {
@@ -32,9 +65,10 @@ const postStore=async ({title, file, desc, isFeatured, subHeading, priority, inv
     var result = await uploadToCloudinary(locaFilePath);
     console.log(result);
     // res.json({ url: result.url, public_id: result.public_id,msg:"Image Upload Successfully" });
-
+    const similarStoreIds = similarStore.map(store => store.value);
+    console.log(similarStoreIds);
     const newStore = new Store({
-       subHeading, title, file, desc: storeOverview, priority, invalidLink, seoTitle, pageTitle, status, category, similarStore,storeOverview: desc, img: {
+       subHeading, title, file, desc: storeOverview, priority, invalidLink, seoTitle, pageTitle, status, category, similarStore: similarStoreIds,storeOverview: desc, img: {
             url: result.url,
             id: result.public_id
         }, isFeatured, ts: new Date().getTime()
@@ -113,5 +147,6 @@ module.exports={
     updateStore,
     deleteAllStores,
     deleteStore,
-    deleteStoreImage
+    deleteStoreImage,
+    getAllStoreByFirstLetter
 };
