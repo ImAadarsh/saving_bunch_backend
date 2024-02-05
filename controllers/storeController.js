@@ -14,8 +14,6 @@ const getStores = async ({ id, isFeatured }) => {
     }
     console.log('Query Object:', query);
   const data = await Store.find(query).populate('similarStores').populate('category');
-
-
     console.log('Returned Data:', data);
     return { status: true, data };
     
