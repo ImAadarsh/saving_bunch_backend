@@ -63,12 +63,12 @@ const postStore=async ({title, file, desc, isFeatured, subHeading, priority, inv
 
     var locaFilePath = file.path;
     var result = await uploadToCloudinary(locaFilePath);
-    console.log(result);
+  
     // res.json({ url: result.url, public_id: result.public_id,msg:"Image Upload Successfully" });
-    const similarStoreIds = similarStore.map(store => store.value);
-    console.log(similarStoreIds);
+    similarStores = JSON.parse(similarStore);
+    category = JSON.parse(category);
     const newStore = new Store({
-       subHeading, title, file, desc: storeOverview, priority, invalidLink, seoTitle, pageTitle, status, category, similarStore: similarStoreIds,storeOverview: desc, img: {
+       subHeading, title, file, desc: storeOverview, priority, invalidLink, seoTitle, pageTitle, status, category, similarStores,storeOverview: desc, img: {
             url: result.url,
             id: result.public_id
         }, isFeatured, ts: new Date().getTime()

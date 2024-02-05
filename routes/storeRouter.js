@@ -15,14 +15,14 @@ router.get('/getAllStoreByFirstLetter', async (req, res) => {
 
 router.post('/postStore', upload, async (req, res) => {
     // console.log(req.body.similarStore);
-    const similarStoreIds = Array.isArray(req.body.similarStore) ? req.body.similarStore.map(store => store.value) : [];
+    // const similarStoreIds = Array.isArray(req.body.similarStore) ? req.body.similarStore.map(store => store.value) : [];
     // const similarStoreIds = req.body.similarStore.map(store => store.value);
-    console.log(similarStoreIds);
-    // const data = await postStore({ ...req.body, file: req.file });
-    // if (!data.status) {
-    //     return res.status(400).json(data);
-    // }
-    // res.json(data);
+    // console.log(req.body.similarStore);
+    const data = await postStore({ ...req.body, file: req.file });
+    if (!data.status) {
+        return res.status(400).json(data);
+    }
+    res.json(data);
 });
 
 router.put('/updateStore/:id', upload,async (req, res) => {

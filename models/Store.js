@@ -13,7 +13,10 @@ const mySchema = mongoose.Schema({
     seoTitle: String,
     pageTitle: String,
     invalidLink: String,
-    status: Boolean,
+    status: {
+        type: Boolean,
+        default: true
+    },
     storeOverview: String,
     ts: String,
     similarStores: [{
