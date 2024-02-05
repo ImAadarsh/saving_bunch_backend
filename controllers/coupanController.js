@@ -39,23 +39,19 @@ const getCoupansByIds = async ({ storeId, categoryId}) => {
 };
 
 
-const postCoupan = async ({priority, store, category, title, coupanCode, link, expiryDate, is_coupan, is_popular, is_exclusive, file, desc, sideLine, subText, auth }) => {
+const postCoupan = async ({priority, store, category, title, coupanCode, link, expiryDate, is_coupan, is_popular, is_exclusive, desc, sideLine, subText, auth }) => {
     // ... (Your commented out authorization check)
 //     console.log('Input Data - store:', store);
 //     console.log('Input Data - category:', category);
 //     console.log('Input Data - store:', );
 // console.log('Input Data - category:', );
 storeId = (store).replace(/^"(.*)"$/, '$1');;
-categoryId = (category).replace(/^"(.*)"$/, '$1');
-
-
+category = JSON.parse(category);
     try {
-        var locaFilePath = file.path;
-        var result = await uploadToCloudinary(locaFilePath);
 
         const newCoupan = new Coupan({
             store: storeId,
-            category: categoryId,
+            category,
             title,
             coupanCode,
             link,
@@ -66,10 +62,6 @@ categoryId = (category).replace(/^"(.*)"$/, '$1');
             sideLine,
             subText,
             priority,
-            img: {
-                url: result.url,
-                id: result.public_id
-            },
             desc,
             ts: new Date().getTime()
         });
