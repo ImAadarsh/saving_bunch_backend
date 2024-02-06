@@ -15,8 +15,8 @@ const getDeals = async () => {
             subText: deal.subText,
             isExclusive: deal.isExclusive,
             ts: deal.ts,
-            storeImg: storeInfo.img.url,
-            storeImgId: storeInfo.img.id,
+            storeImg: storeInfo?.img.url,
+            storeImgId: storeInfo?.img.id,
             createdAt: deal.createdAt,
             updatedAt: deal.updatedAt,
             __v: deal.__v

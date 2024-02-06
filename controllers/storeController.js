@@ -78,12 +78,12 @@ const postStore=async ({title, file, desc, isFeatured, subHeading, priority, inv
     return { status: true, message: 'New store created', data: saveStore };
 };
 
-const updateStore = async ({ id, auth, title, file, desc, isFeatured, priority }) => {
+const updateStore = async ({ id, auth, title, file, desc, isFeatured, subHeading, priority, invalidLink, seoTitle, pageTitle, status,storeOverview,  }) => {
     // if (!auth  || auth.role!=='ADMIN') {
     //     return { status: false, message: "Not Authorised" }
     // }
 
-    let updateObj = removeUndefined({ title, desc, isFeatured, priority });
+    let updateObj = removeUndefined({ title, file, desc, isFeatured, subHeading, priority, invalidLink, seoTitle, pageTitle, status,storeOverview });
 
     if (file !== '' && file !== undefined) {
         // insert new image as old one is deleted
