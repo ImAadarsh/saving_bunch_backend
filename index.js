@@ -2,7 +2,7 @@ require('dotenv').config();
 require('./db/conn');
 const express=require('express');
 const cors=require('cors');
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5011;
 const app=express();
 const Coupon = require('./models/Coupan');
 const Category = require('./models/Category');
@@ -117,6 +117,27 @@ app.get('/api/searchCoupons', async (req, res) => {
       res.status(500).json({ status: false, message: 'Internal Server Error' });
     }
   });
+
+  // Create a new endpoint to search for stores by name
+app.get('/api/searchStores', async (req, res) => {
+    try {
+        const { storeName } = req.query;
+
+        // Build the query based on the provided parameters
+        const query = {};
+        if (storeName) {
+            query.title = { $regex: storeName, $options: 'i' };
+        }
+
+        // Execute the query and retrieve the stores
+        const stores = await Store.find(query).select('id title img.url');;
+
+        res.json({ status: true, data: stores });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ status: false, message: 'Internal Server Error' });
+    }
+});
 
 app.listen(port, ()=>{
     console.log(port);
