@@ -2,7 +2,7 @@ require('dotenv').config();
 require('./db/conn');
 const express=require('express');
 const cors=require('cors');
-const port = process.env.PORT || 5011;
+const port = process.env.PORT || 5000;
 const app=express();
 const Coupon = require('./models/Coupan');
 const Category = require('./models/Category');
@@ -123,7 +123,7 @@ app.get('/api/searchStores', async (req, res) => {
     try {
         const { storeName } = req.query;
 
-        // Build the query based on the provided parameters
+        // Build the query based on the  parameters
         const query = {};
         if (storeName) {
             query.title = { $regex: storeName, $options: 'i' };
