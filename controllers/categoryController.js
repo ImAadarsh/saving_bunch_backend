@@ -20,6 +20,28 @@ const getCategorys=async ({id, slug})=>{
     return {status: true,  data};
 };
 
+const getCategorySEO = async ({ name }) => {
+    const query = {};
+  
+    if (name) {
+      // Replace hyphens with spaces and make the search case-insensitive
+      const formattedTitle = name.replace(/-/g, ' ');
+      query.name = new RegExp(formattedTitle, 'i');
+    }
+  
+  
+    console.log('Query Object:', query);
+  
+    try {
+      const data = await Category.find(query);
+      console.log('Returned Data:', data);
+      return { status: true, data };
+    } catch (error) {
+      console.error('Error:', error.message);
+      return { status: false, error: error.message };
+    }
+  };
+
 const getAllCategoriesByFirstLetter = async () => {
     const pipeline = [
         {
@@ -144,5 +166,6 @@ module.exports={
     deleteAllCategorys,
     deleteCategory,
     deleteCategoryImage,
-    getAllCategoriesByFirstLetter
+    getAllCategoriesByFirstLetter,
+    getCategorySEO
 };

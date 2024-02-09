@@ -1,11 +1,17 @@
 const express = require('express');
-const { getStores, postStore, updateStore, deleteStoreImage, deleteStore, deleteAllStores, getAllStoreByFirstLetter } = require('../controllers/storeController');
+const { getStores, postStore, updateStore, deleteStoreImage, deleteStore, deleteAllStores, getAllStoreByFirstLetter, getStoresSEO } = require('../controllers/storeController');
 const auth = require('../middleware/auth');
 const { upload } = require('../util/util');
 const router = express.Router();
 
 router.get('/getStores', async (req, res) => {
     const data = await getStores({ ...req.query });
+    res.json(data);
+});
+
+
+router.get('/getStoresSEO', async (req, res) => {
+    const data = await getStoresSEO({ ...req.query });
     res.json(data);
 });
 router.get('/getAllStoreByFirstLetter', async (req, res) => {

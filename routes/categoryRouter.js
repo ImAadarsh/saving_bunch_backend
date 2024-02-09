@@ -1,11 +1,15 @@
 const express = require('express');
-const { getCategorys, postCategory, updateCategory, deleteCategoryImage, deleteCategory, deleteAllCategorys, getAllCategoriesByFirstLetter } = require('../controllers/categoryController');
+const { getCategorys, postCategory, updateCategory, deleteCategoryImage, deleteCategory, deleteAllCategorys, getAllCategoriesByFirstLetter,getCategorySEO } = require('../controllers/categoryController');
 const auth = require('../middleware/auth');
 const { upload } = require('../util/util');
 const router = express.Router();
 
 router.get('/getCategorys', async (req, res) => {
     const data = await getCategorys({ ...req.query });
+    res.json(data);
+});
+router.get('/getCategorySEO', async (req, res) => {
+    const data = await getCategorySEO({ ...req.query });
     res.json(data);
 });
 

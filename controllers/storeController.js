@@ -19,6 +19,29 @@ const getStores = async ({ id, isFeatured }) => {
     
 };
 
+const getStoresSEO = async ({ title }) => {
+    const query = {};
+  
+    if (title) {
+      // Replace hyphens with spaces and make the search case-insensitive
+      const formattedTitle = title.replace(/-/g, ' ');
+      query.title = new RegExp(formattedTitle, 'i');
+    }
+  
+  
+    console.log('Query Object:', query);
+  
+    try {
+      const data = await Store.find(query).populate('similarStores').populate('category');
+      console.log('Returned Data:', data);
+      return { status: true, data };
+    } catch (error) {
+      console.error('Error:', error.message);
+      return { status: false, error: error.message };
+    }
+  };
+  
+
 
 const getAllStoreByFirstLetter = async () => {
     const pipeline = [
@@ -148,5 +171,6 @@ module.exports={
     deleteAllStores,
     deleteStore,
     deleteStoreImage,
-    getAllStoreByFirstLetter
+    getAllStoreByFirstLetter,
+    getStoresSEO
 };
