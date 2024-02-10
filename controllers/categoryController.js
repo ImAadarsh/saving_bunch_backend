@@ -2,33 +2,44 @@ const Category = require("../models/Category");
 const { removeUndefined, uploadToCloudinary } = require("../util/util");
 const cloudinary = require("cloudinary").v2;
 
-const getCategorys=async ({id, slug})=>{
+const getCategorys = async ({ id, slug, status }) => {
     let and = [];
-    if(id)
-    {
-        and.push({_id: id});
+
+    if (id) {
+        and.push({ _id: id });
     }
-    if(slug)
-    {
-        and.push({slug});
+    if (slug) {
+        and.push({ slug });
     }
-    if(and.length===0)
-    {
+    if (status !== undefined) {
+        and.push({ status: Boolean(status) });
+    }
+    if (and.length === 0) {
         and.push({});
     }
-    const data=await Category.find({$and: and});
-    return {status: true,  data};
+
+    try {
+        const data = await Category.find({ $and: and })
+            .sort({ priority: -1 }) // Sorting by priority in descending order
+            .exec();
+
+        return { status: true, data };
+    } catch (error) {
+        return { status: false, error: error.message };
+    }
 };
 
+
 const getCategorySEO = async ({ name }) => {
-    const query = {};
+    const query = {
+        status: true, // Set status to true by default
+    };
   
     if (name) {
       // Replace hyphens with spaces and make the search case-insensitive
       const formattedTitle = name.replace(/-/g, ' ');
       query.name = new RegExp(formattedTitle, 'i');
     }
-  
   
     console.log('Query Object:', query);
   
@@ -40,16 +51,20 @@ const getCategorySEO = async ({ name }) => {
       console.error('Error:', error.message);
       return { status: false, error: error.message };
     }
-  };
+};
+
 
 const getAllCategoriesByFirstLetter = async () => {
     const pipeline = [
         {
+            $match: { status: true }, // Set default search to include only categories with status: true
+        },
+        {
             $project: {
-                firstLetter: { $substr: ['$title', 0, 1] },
-                name: '$title',  // Include the title field as 'name'
-                _id: 1,  // Include the _id field
-                img: 1,  // Include the img field
+                firstLetter: { $substr: ['$name', 0, 1] },
+                name: '$name',
+                _id: 1,
+                img: 1,
                 // Add other fields if needed
             },
         },
@@ -71,18 +86,29 @@ const getAllCategoriesByFirstLetter = async () => {
         { $sort: { _id: 1 } },
     ];
 
-    const data = await Category.aggregate(pipeline);
-    return { status: true, data };
+    try {
+        const data = await Category.aggregate(pipeline);
+        return { status: true, data };
+    } catch (error) {
+        console.error('Error:', error.message);
+        return { status: false, error: error.message };
+    }
 };
 
 
-
-
-
 const postCategory=async ({title, file, desc, priority, seoTitle, name, pageTitle, auth})=>{
-    var locaFilePath = file.path;
-    var result = await uploadToCloudinary(locaFilePath);
-    console.log(result);
+    if (file !== '' && file !== undefined) {
+        try {
+            var locaFilePath = file.path;
+            var result = await uploadToCloudinary(locaFilePath);
+            
+            if (result.error) {
+                console.error('Cloudinary upload error:', result.error);
+            } 
+        } catch (error) {
+            console.error('Error during upload:', error);
+        }
+    }
     // res.json({ url: result.url, public_id: result.public_id,msg:"Image Upload Successfully" });
 
     const newCategory = new Category({
@@ -95,27 +121,32 @@ const postCategory=async ({title, file, desc, priority, seoTitle, name, pageTitl
 
     return { status: true, message: 'New category created', data: saveCategory };
 };
+const updateCategory = async ({ id, auth, title, desc, slug, priority, status, seoTitle, pageTitle, file }) => {
+    try {
+        console.log(file);
+        let updateObj = removeUndefined({ title, desc, status, seoTitle, pageTitle, priority });
 
-const updateCategory = async ({ id, auth, title, desc, slug, priority,  file }) => {
-    // if (!auth  || auth.role!=='ADMIN') {
-    //     return { status: false, message: "Not Authorised" }
-    // }
+        if (file !== '' && file !== undefined) {
+            var locaFilePath = file.path;
+            var result = await uploadToCloudinary(locaFilePath);
 
-    let updateObj = removeUndefined({ title, desc, priority });
+            if (result.error) {
+                console.error('Cloudinary upload error:', result.error);
+            } else {
+                console.log('Upload successful:', result);
+                updateObj['img'] = {
+                    url: result.url,
+                    id: result.public_id
+                };
+            }
+        }
 
-    if (file !== '' && file !== undefined) {
-        // insert new image as old one is deleted
-        var locaFilePath = file.path;
-        var result = await uploadToCloudinary(locaFilePath);
-        updateObj['img'] = {
-            url: result.url,
-            id: result.public_id
-        };
+        const updateCategory = await Category.findByIdAndUpdate(id, { $set: updateObj }, { new: true });
+        return { status: true, message: 'Category updated successfully', data: updateCategory };
+    } catch (error) {
+        console.error('Error during update:', error);
+        return { status: false, error: error.message };
     }
-
-    const updateCategory = await Category.findByIdAndUpdate(id, { $set: updateObj }, { new: true });
-
-    return { status: true, message: 'Category updated successfully', data: updateCategory };
 };
 
 const deleteCategoryImage = async ({ auth, id }) => {

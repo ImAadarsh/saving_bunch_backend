@@ -2,22 +2,28 @@ const Coupan = require("../models/Coupan");
 const { removeUndefined, uploadToCloudinary } = require("../util/util");
 const cloudinary = require("cloudinary").v2;
 
-const getCoupans = async ({ store, category }) => {
+const getCoupans = async ({ store, category, status, isExclusive }) => {
     const query = {};
 
     if (store) {
         query.store = store;
     }
+    if (store) {
+        query.status = status;
+    }
 
     if (category) {
         query.category = category;
+    }
+    if (isExclusive) {
+        query.is_exclusive = isExclusive;
     }
 
     console.log('Query Object:', query);
 
     try {
         // Assuming you have a Mongoose model named 'Coupon'
-        const data = await Coupan.find(query).populate('store');
+        const data = await Coupan.find(query).populate('store').sort({ priority: -1 }).exec();
 
         return { status: true, data };
     } catch (error) {
@@ -33,7 +39,7 @@ const getCoupansByIds = async ({ storeId, categoryId}) => {
     console.log(storeId);
 
     // For example:
-    const coupans = await Coupan.find({ store: storeId});
+    const coupans = await Coupan.find({ store: storeId, status: true}).sort({ priority: -1 }).exec();;
 
     return { status: true, data: coupans };
 };

@@ -15,7 +15,8 @@ const mySchema = mongoose.Schema({
     invalidLink: String,
     status: {
         type: Boolean,
-        default: true
+        default: true,
+        required: true
     },
     storeOverview: String,
     ts: String,

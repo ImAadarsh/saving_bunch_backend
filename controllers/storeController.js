@@ -2,7 +2,7 @@ const Store = require("../models/Store");
 const { removeUndefined, uploadToCloudinary } = require("../util/util");
 const cloudinary = require("cloudinary").v2;
 
-const getStores = async ({ id, isFeatured }) => {
+const getStores = async ({ id, isFeatured, status }) => {
     const query = {};
 
     if (id) {
@@ -12,15 +12,20 @@ const getStores = async ({ id, isFeatured }) => {
     if (isFeatured) {
         query.isFeatured = isFeatured;
     }
+    if (status) {
+        query.status = status;
+    }
     console.log('Query Object:', query);
-  const data = await Store.find(query).populate('similarStores').populate('category');
+  const data = await Store.find(query).populate('similarStores').populate('category').sort({ priority: -1 }).exec();
     console.log('Returned Data:', data);
     return { status: true, data };
     
 };
 
 const getStoresSEO = async ({ title }) => {
-    const query = {};
+    const query = {
+        status: true, // Set status to true by default
+    };
   
     if (title) {
       // Replace hyphens with spaces and make the search case-insensitive
@@ -45,6 +50,9 @@ const getStoresSEO = async ({ title }) => {
 
 const getAllStoreByFirstLetter = async () => {
     const pipeline = [
+        {
+            $match: { status: true }, // Set default search to include only categories with status: true
+        },
         {
             $project: {
                 firstLetter: { $substr: ['$title', 0, 1] },
@@ -76,30 +84,33 @@ const getAllStoreByFirstLetter = async () => {
     return { status: true, data };
 };
 
-const postStore=async ({title, file, desc, isFeatured, subHeading, priority, invalidLink, seoTitle, pageTitle, status, category, similarStore,storeOverview, auth})=>{
-    // if(!auth || auth.role!=='ADMIN')
-    // {
-    //     return { status: false, message: "Not Authorised" };
-    // }
+const postStore = async ({ title, file, desc, isFeatured, subHeading, priority, invalidLink, seoTitle, pageTitle, status, category, similarStore, storeOverview, auth }) => {
+    try {
+        var locaFilePath = file.path;
+        var result = await uploadToCloudinary(locaFilePath);
 
-    // console.log(title, subTitle, writtenBy, tags, file);
+        if (!result) {
+            throw new Error('Error uploading image to Cloudinary');
+        }
 
-    var locaFilePath = file.path;
-    var result = await uploadToCloudinary(locaFilePath);
-  
-    // res.json({ url: result.url, public_id: result.public_id,msg:"Image Upload Successfully" });
-    similarStores = JSON.parse(similarStore);
-    category = JSON.parse(category);
-    const newStore = new Store({
-       subHeading, title, file, desc: storeOverview, priority, invalidLink, seoTitle, pageTitle, status, category, similarStores,storeOverview: desc, img: {
-            url: result.url,
-            id: result.public_id
-        }, isFeatured, ts: new Date().getTime()
-    });
-    const saveStore = await newStore.save();
+        similarStores = JSON.parse(similarStore);
+        category = JSON.parse(category);
 
-    return { status: true, message: 'New store created', data: saveStore };
+        const newStore = new Store({
+            subHeading, title, desc: storeOverview, priority, invalidLink, seoTitle, pageTitle, status, category, similarStores, storeOverview: desc, img: {
+                url: result.url,
+                id: result.public_id
+            }, isFeatured, ts: new Date().getTime()
+        });
+
+        const saveStore = await newStore.save();
+        return { status: true, message: 'New store created', data: saveStore };
+    } catch (error) {
+        console.error('Error:', error.message);
+        return { status: false, error: error.message };
+    }
 };
+
 
 const updateStore = async ({ id, auth, title, file, desc, isFeatured, subHeading, priority, invalidLink, seoTitle, pageTitle, status,storeOverview,  }) => {
     // if (!auth  || auth.role!=='ADMIN') {

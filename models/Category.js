@@ -11,6 +11,11 @@ const mySchema=mongoose.Schema({
     },
     desc: String,
     priority: Number,
+    status : {
+        type: Boolean,
+        default: true,
+        required : true
+    },
     ts:String,
 },{
     timestamps: true

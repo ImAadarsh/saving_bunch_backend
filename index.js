@@ -123,12 +123,15 @@ app.get('/api/searchStores', async (req, res) => {
     try {
         const { storeName } = req.query;
 
-        // Build the query based on the  parameters
-        const query = {};
-        if (storeName) {
-            query.title = { $regex: storeName, $options: 'i' };
-        }
+        // Build the query based on the parameters
+        const query = {
+            status: true, // "AND" condition for status
+        };
 
+        if (storeName) {
+            query.title = { $regex: storeName, $options: 'i' }; // "AND" condition for storeName
+        }
+console.log(query);
         // Execute the query and retrieve the stores
         const stores = await Store.find(query).select('id title img.url');;
 

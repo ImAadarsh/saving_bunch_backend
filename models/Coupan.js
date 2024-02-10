@@ -35,6 +35,11 @@ const mySchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
+    status: {
+        type: Boolean,
+        default: true,
+        required: true
+    },
     ts: String,
 }, {
     timestamps: true
