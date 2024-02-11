@@ -127,15 +127,22 @@ app.get('/api/searchStores', async (req, res) => {
         const query = {
             status: true, // "AND" condition for status
         };
+        const query1 = {
+            status: true, // "AND" condition for status
+        };
 
         if (storeName) {
             query.title = { $regex: storeName, $options: 'i' }; // "AND" condition for storeName
         }
-console.log(query);
+        if (storeName) {
+            query1.name = { $regex: storeName, $options: 'i' }; // "AND" condition for storeName
+        }
+        
         // Execute the query and retrieve the stores
-        const stores = await Store.find(query).select('id title img.url');;
+        const stores = await Store.find(query).select('id title img.url');
+        const categories = await Category.find(query).select('id name img.url');
 
-        res.json({ status: true, data: stores });
+        res.json({ status: true, data: stores, data1 : categories });
     } catch (error) {
         console.error(error);
         res.status(500).json({ status: false, message: 'Internal Server Error' });
