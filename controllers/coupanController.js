@@ -26,7 +26,7 @@ const getCoupans = async ({ store, category, status, isExclusive , id}) => {
 
     try {
         // Assuming you have a Mongoose model named 'Coupon'
-        const data = await Coupan.find(query).populate('store').sort({ priority: -1 }).exec();
+        const data = await Coupan.find(query).populate('store').populate('category').sort({ priority: -1 }).exec();
 
         return { status: true, data };
     } catch (error) {
