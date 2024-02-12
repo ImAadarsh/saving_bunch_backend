@@ -94,8 +94,9 @@ const updateCoupan = async ({ id, auth, store, priority, category, title, coupan
     if(category){
         category = JSON.parse(category);
     }
-
-    let updateObj = removeUndefined({ store, category, title, priority, link, expiryDate, is_coupan, is_popular, is_exclusive, desc });
+   
+    let updateObj = removeUndefined({ store, category, title, priority, coupanCode: coupanCode || "", link, expiryDate, is_coupan, is_popular, is_exclusive, desc });
+    
     if (file !== '' && file !== undefined) {
         // insert new image as old one is deleted
         var locaFilePath = file.path;
