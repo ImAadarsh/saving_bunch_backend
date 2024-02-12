@@ -88,9 +88,14 @@ const updateCoupan = async ({ id, auth, store, priority, category, title, coupan
     // if (!auth  || auth.role!=='ADMIN') {
     //     return { status: false, message: "Not Authorised" }
     // }
+    if(store){
+        store = (store).replace(/^"(.*)"$/, '$1');;
+    }
+    if(category){
+        category = JSON.parse(category);
+    }
 
-    let updateObj = removeUndefined({ store: JSON.parse(store), category: JSON.parse(category), title, priority, coupanCode, link, expiryDate, is_coupan, is_popular, is_exclusive, desc });
-
+    let updateObj = removeUndefined({ store, category, title, priority, coupanCode, link, expiryDate, is_coupan, is_popular, is_exclusive, desc });
     if (file !== '' && file !== undefined) {
         // insert new image as old one is deleted
         var locaFilePath = file.path;
