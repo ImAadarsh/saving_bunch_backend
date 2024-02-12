@@ -2,7 +2,7 @@ const Coupan = require("../models/Coupan");
 const { removeUndefined, uploadToCloudinary } = require("../util/util");
 const cloudinary = require("cloudinary").v2;
 
-const getCoupans = async ({ store, category, status, isExclusive }) => {
+const getCoupans = async ({ store, category, status, isExclusive , id}) => {
     const query = {};
 
     if (store) {
@@ -17,6 +17,9 @@ const getCoupans = async ({ store, category, status, isExclusive }) => {
     }
     if (isExclusive) {
         query.is_exclusive = isExclusive;
+    }
+    if (id) {
+        query._id = id;
     }
 
     console.log('Query Object:', query);

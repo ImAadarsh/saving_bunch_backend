@@ -93,11 +93,11 @@ const postStore = async ({ title, file, desc, isFeatured, subHeading, priority, 
             throw new Error('Error uploading image to Cloudinary');
         }
 
-        similarStores = JSON.parse(similarStore);
+        similarStore = JSON.parse(similarStore);
         category = JSON.parse(category);
 
         const newStore = new Store({
-            subHeading, title, desc: storeOverview, priority, invalidLink, seoTitle, pageTitle, status, category, similarStores, storeOverview: desc, img: {
+            subHeading, title, desc: storeOverview, priority, invalidLink, seoTitle, pageTitle, status, category, similarStores: similarStore, storeOverview: desc, img: {
                 url: result.url,
                 id: result.public_id
             }, isFeatured, ts: new Date().getTime()
@@ -112,27 +112,31 @@ const postStore = async ({ title, file, desc, isFeatured, subHeading, priority, 
 };
 
 
-const updateStore = async ({ id, auth, title, file, desc, isFeatured, subHeading, priority, invalidLink, seoTitle, pageTitle, status,storeOverview,  }) => {
-    // if (!auth  || auth.role!=='ADMIN') {
-    //     return { status: false, message: "Not Authorised" }
-    // }
+const updateStore = async ({ id, auth, title, file, desc, isFeatured, subHeading, priority, invalidLink, seoTitle, pageTitle, status, storeOverview, similarStore, category }) => {    
+    if(similarStore.length !== 0){
+        similarStores = similarStore ? JSON.parse(similarStore) : undefined;
+    }
+    if(category.length !== 0){
+        category = category ? JSON.parse(category) : undefined;
+    }
+    let updateObj = removeUndefined({ title, file, desc, isFeatured, category, similarStores, subHeading, priority, invalidLink, seoTitle, pageTitle, status, storeOverview });
+console.log(updateObj);
+    if (file && file !== '') {
+        // Insert new image as the old one is deleted
+        const localFilePath = file.path;
+        const result = await uploadToCloudinary(localFilePath);
 
-    let updateObj = removeUndefined({ title, file, desc, isFeatured, subHeading, priority, invalidLink, seoTitle, pageTitle, status,storeOverview });
-
-    if (file !== '' && file !== undefined) {
-        // insert new image as old one is deleted
-        var locaFilePath = file.path;
-        var result = await uploadToCloudinary(locaFilePath);
         updateObj['img'] = {
             url: result.url,
             id: result.public_id
         };
     }
 
-    const updateStore = await Store.findByIdAndUpdate(id, { $set: updateObj }, { new: true });
+    const updatedStore = await Store.findByIdAndUpdate(id, { $set: updateObj }, { new: true });
 
-    return { status: true, message: 'Store updated successfully', data: updateStore };
+    return { status: true, message: 'Store updated successfully', data: updatedStore };
 };
+
 
 const deleteStoreImage = async ({ auth, id }) => {
     // if (!auth || auth.role!=='ADMIN') {
