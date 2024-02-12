@@ -21,6 +21,7 @@ const categoryRouter=require('./routes/categoryRouter');
 const emailRouter=require('./routes/emailRouter');
 const brandRouter = require('./routes/brandRouter');
 const dealRouter = require('./routes/dealRouter');
+const Coupan = require('./models/Coupan');
 
 app.use(cors());
 app.use(express.json());
@@ -37,6 +38,24 @@ app.use('/email', emailRouter);
 app.use('/brands', brandRouter);
 app.use('/deals', dealRouter);
 
+app.get('/storesByCategory/:categoryId', async (req, res) => {
+    try {
+      const categoryId = req.params.categoryId;
+  
+      // Find all coupons with the specified category
+      const coupons = await Coupan.find({ category: categoryId });
+  
+      // Extract store IDs from the coupons
+      const storeIds = coupons.map(coupon => coupon.store);
+  
+      // Find all stores with the extracted IDs
+      const stores = await Store.find({ _id: { $in: storeIds } });
+      res.json({ status: true, data: stores });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
 
 app.get('/api/totalCouponsWithStoreInfo', async (req, res) => {
     try {
