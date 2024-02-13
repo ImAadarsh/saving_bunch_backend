@@ -48,7 +48,7 @@ const getCoupansByIds = async ({ storeId, categoryId}) => {
 };
 
 
-const postCoupan = async ({priority, store, category, title, coupanCode, link, expiryDate, is_coupan, is_popular, is_exclusive, desc, sideLine, subText, auth }) => {
+const postCoupan = async ({priority, store, category,status, title, coupanCode, link, expiryDate, is_coupan, is_popular, is_exclusive, desc, sideLine, subText, auth }) => {
     // ... (Your commented out authorization check)
 //     console.log('Input Data - store:', store);
 //     console.log('Input Data - category:', category);
@@ -63,6 +63,7 @@ category = JSON.parse(category);
             category,
             title,
             coupanCode,
+            status,
             link,
             expiryDate,
             is_coupan,
@@ -87,7 +88,7 @@ category = JSON.parse(category);
 // postCoupan({ store: '{"key": "value"}', category: '{"key": "value"}', ...otherParams });
 
 
-const updateCoupan = async ({ id, auth, store, priority, category, title, coupanCode, link, expiryDate, is_coupan, is_popular, is_exclusive, file, desc }) => {
+const updateCoupan = async ({ id, auth, store, status, priority, category, title, coupanCode, link, expiryDate, is_coupan, is_popular, is_exclusive, file, desc }) => {
     // if (!auth  || auth.role!=='ADMIN') {
     //     return { status: false, message: "Not Authorised" }
     // }
@@ -98,7 +99,7 @@ const updateCoupan = async ({ id, auth, store, priority, category, title, coupan
         category = JSON.parse(category);
     }
    
-    let updateObj = removeUndefined({ store, category, title, priority, coupanCode: coupanCode || "", link, expiryDate, is_coupan, is_popular, is_exclusive, desc });
+    let updateObj = removeUndefined({ store, category, title, priority, coupanCode: coupanCode || "", link, expiryDate, is_coupan, is_popular,status, is_exclusive, desc });
     
     if (file !== '' && file !== undefined) {
         // insert new image as old one is deleted
