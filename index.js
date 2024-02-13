@@ -78,6 +78,27 @@ app.get('/storesByCategory/:categoryId', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+app.get('/categoriesByExclusive/', async (req, res) => {
+    try {
+
+        // Find all coupons with the specified store
+        const coupons = await Coupan.find({ is_exclusive: true });
+
+        // Extract category IDs from the coupons
+        const categoryIds = coupons.reduce((acc, coupon) => {
+            acc.push(...coupon.category);
+            return acc;
+        }, []);
+        // Remove duplicate category IDs using Set
+        const uniqueCategoryIds = [...new Set(categoryIds)];
+        // Find all categories with the extracted IDs
+        const categories = await Category.find({ _id: { $in: uniqueCategoryIds } });
+        res.json({ status: true, data: categories });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 app.get('/api/totalCouponsWithStoreInfo', async (req, res) => {
     try {
