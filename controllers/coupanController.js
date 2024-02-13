@@ -8,10 +8,9 @@ const getCoupans = async ({ store, category, status, isExclusive , id}) => {
     if (store) {
         query.store = store;
     }
-    if (store) {
+    if (status) {
         query.status = status;
     }
-
     if (category) {
         query.category = category;
     }
