@@ -87,7 +87,7 @@ category = JSON.parse(category);
 // postCoupan({ store: '{"key": "value"}', category: '{"key": "value"}', ...otherParams });
 
 
-const updateCoupan = async ({ id, auth, store, status, priority, category, title, coupanCode, link, expiryDate, is_coupan, is_popular, is_exclusive, file, desc }) => {
+const updateCoupan = async ({ id, auth, store, status,  sideLine, subText, priority, category, title, coupanCode, link, expiryDate, is_coupan, is_popular, is_exclusive, file, desc }) => {
     // if (!auth  || auth.role!=='ADMIN') {
     //     return { status: false, message: "Not Authorised" }
     // }
@@ -98,7 +98,7 @@ const updateCoupan = async ({ id, auth, store, status, priority, category, title
         category = JSON.parse(category);
     }
    
-    let updateObj = removeUndefined({ store, category, title, priority, coupanCode: coupanCode || "", link, expiryDate, is_coupan, is_popular,status, is_exclusive, desc });
+    let updateObj = removeUndefined({ store, category, title, sideLine, subText, priority, coupanCode: coupanCode || "", link, expiryDate, is_coupan, is_popular,status, is_exclusive, desc });
     
     if (file !== '' && file !== undefined) {
         // insert new image as old one is deleted
