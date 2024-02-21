@@ -121,10 +121,10 @@ const postCategory=async ({title, file, desc, priority, seoTitle, name, pageTitl
 
     return { status: true, message: 'New category created', data: saveCategory };
 };
-const updateCategory = async ({ id, auth, title, desc, slug, priority, status, seoTitle, pageTitle, file }) => {
+const updateCategory = async ({ id, auth, title, desc, slug, name, priority, status, seoTitle, pageTitle, file }) => {
     try {
         console.log(file);
-        let updateObj = removeUndefined({ title, desc, status, seoTitle, pageTitle, priority });
+        let updateObj = removeUndefined({ title, desc, status, name, seoTitle, pageTitle, priority });
 
         if (file !== '' && file !== undefined) {
             var locaFilePath = file.path;
